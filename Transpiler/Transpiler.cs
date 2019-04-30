@@ -28,31 +28,14 @@ namespace Transpiler
         {
             this.fileWriter.CreateDirectory(this.config.TargetDirectory);
 
-            var tsTypes = types.Select(t =>
-            {
-                var subFolders = this.config.UseNamespacesAsFolders
-                    ? this.config.MapNamespace(t.Namespace).Replace(".", "\\")
-                    : "";
+            var tsTypes = this.CreateTsTypes(types);
 
-                return new
-                {
-                    Id = t.FullName,
-                    Name = t.Name,
-                    Directory = Path.Combine(this.config.TargetDirectory, subFolders.Trim('\\')),
-                    Type = t
-                };
-            });
-
-            foreach (var type in types)
+            foreach (var tsType in tsTypes)
             {
                 var imports = new List<string>();
-                var content = new List<string>();
-                var fileName = $"{type.Name}.ts";
-                var subFolders = this.config.UseNamespacesAsFolders
-                    ? this.config.MapNamespace(type.Namespace).Replace(".", "\\")
-                    : "";
-                var directory = Path.Combine(this.config.TargetDirectory, subFolders.Trim('\\'));
-                var filePath = Path.Combine(directory, fileName);
+                var body = new List<string>();
+
+                var filePath = Path.Combine(tsType.Directory, $"{tsType.Name}.ts");
 
                 if (this.config.PrintGeneratedFileText)
                 {
@@ -60,40 +43,68 @@ namespace Transpiler
                     imports.Add("");
                 }
 
-                content.Add($"export interface {type.Name} {{");
+                body.Add($"export interface {tsType.Name} {{");
 
-                var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-
+                var properties = tsType.Type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
                 foreach (var prop in properties)
                 {
-                    var pt = prop.PropertyType;
-
-                    // possible TsType
-                    var tsType = tsTypes.SingleOrDefault(t => t.Id == pt.FullName);
-                    if (tsType == null)
-                    {
-                        content.Add($"    {prop.Name}: {this.TsTypeName(pt)};");
-                    }
-                    else
-                    {
-                        var relPath = this.CreateRelativePath(directory, tsType.Directory);
-                        imports.Add($"import {{ {tsType.Name} }} from \"{relPath + tsType.Name}\";");
-                        content.Add($"    {prop.Name}: {tsType.Name};");
-                    }
+                    this.CreatePropertyLines(prop, tsType, tsTypes, imports, body);
                 }
 
-                content.Add("}");
+                body.Add("}");
 
-                var fileLines = new List<string>();
-                fileLines.AddRange(imports);
-                if (imports.Any() && !string.IsNullOrWhiteSpace(imports.Last())) fileLines.Add("");
-                fileLines.AddRange(content);
-                this.fileWriter.CreateFile(filePath, fileLines);
+                this.fileWriter.CreateFile(filePath, this.CombineLines(imports, body));
             }
-
         }
 
-        string CreateRelativePath(string fromDirectoryPath, string toDirectoryPath)
+        IEnumerable<TsType> CreateTsTypes(IEnumerable<Type> types)
+        {
+            foreach (var t in types)
+            {
+                var subFolders = this.config.UseNamespacesAsFolders
+                    ? this.config.MapNamespace(t.Namespace).Replace(".", "\\")
+                    : "";
+
+                yield return new TsType
+                {
+                    Id = t.FullName,
+                    Name = t.Name,
+                    Directory = Path.Combine(this.config.TargetDirectory, subFolders.Trim('\\')),
+                    Type = t
+                };
+            }
+        }
+
+        void CreatePropertyLines(PropertyInfo property, TsType tsType, IEnumerable<TsType> tsTypes, List<string> imports, List<string> body)
+        {
+            var pt = property.PropertyType;
+
+            // possible TsType
+            var otherTsType = tsTypes.SingleOrDefault(t => t.Id == pt.FullName);
+
+            if (otherTsType == null)
+            {
+                body.Add($"    {property.Name}: {this.TsTypeName(pt)};");
+            }
+            else
+            {
+                var relPath = this.CreateRelativeDirectoryPath(tsType.Directory, otherTsType.Directory);
+                imports.Add($"import {{ {otherTsType.Name} }} from \"{relPath + otherTsType.Name}\";");
+                body.Add($"    {property.Name}: {otherTsType.Name};");
+            }
+        }
+
+        List<string> CombineLines(List<string> imports, List<string> body)
+        {
+            var fileLines = new List<string>();
+            fileLines.AddRange(imports);
+            if (imports.Any() && !string.IsNullOrWhiteSpace(imports.Last())) fileLines.Add("");
+            fileLines.AddRange(body);
+
+            return fileLines;
+        }
+
+        string CreateRelativeDirectoryPath(string fromDirectoryPath, string toDirectoryPath)
         {
             if (!fromDirectoryPath.EndsWith("\\")) fromDirectoryPath += "\\";
             var fromUri = new Uri(fromDirectoryPath);
@@ -135,6 +146,3 @@ namespace Transpiler
         }
     }
 }
-
-
-
