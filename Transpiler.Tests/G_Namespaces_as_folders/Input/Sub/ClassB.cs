@@ -1,4 +1,4 @@
-namespace Transpiler.Tests.F.Sub
+namespace Transpiler.Tests.G.Sub
 {
     public class ClassB
     {

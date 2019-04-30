@@ -38,10 +38,6 @@ namespace Transpiler
 
             foreach (var type in types)
             {
-                var fileName = $"{type.Name}.ts";
-
-                var filePath = Path.Combine(this.config.TargetDirectory, fileName);
-
                 var content = new List<string>();
 
                 if (this.config.PrintGeneratedFileText)
@@ -62,6 +58,11 @@ namespace Transpiler
 
                 content.Add("}");
 
+                var fileName = $"{type.Name}.ts";
+                var subFolders = this.config.UseNamespacesAsFolders
+                    ? type.Namespace.Replace(".", "\\")
+                    : "";
+                var filePath = Path.Combine(this.config.TargetDirectory, subFolders, fileName);
                 this.fileWriter.CreateFile(filePath, content);
             }
 

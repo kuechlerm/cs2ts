@@ -21,9 +21,10 @@ namespace Transpiler.Tests
 
         }
 
-        [Fact(Skip = "Manual")]
+        [Fact(Skip = "asdf")]
         public void DefaultOutputTest()
         {
+            var ns = typeof(A.ClassA).Namespace;
             var p = Directory.GetCurrentDirectory();
         }
     }

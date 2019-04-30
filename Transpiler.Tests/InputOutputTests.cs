@@ -50,26 +50,27 @@ namespace Transpiler.Tests
                 .Select(x => new TsFile
                 {
                     Name = Path.GetFileName(x),
-                    Directory = config.TargetDirectory + x.Substring(
-                        outputPath.Length,
-                        x.Length - outputPath.Length - Path.GetFileName(x).Length),
+                    Directory = config.TargetDirectory
+                        + x.Substring(
+                            outputPath.Length,
+                            x.Length - outputPath.Length - Path.GetFileName(x).Length),
                     Lines = File.ReadAllLines(x).ToList()
                 });
 
             var expectedFilePaths = expectedTsFiles.Select(x => x.Directory + x.Name);
             var actualFilePaths = fileWriter.CreatedFiles.Select(x => x.Key);
 
-            expectedFilePaths.Should().BeEquivalentTo(actualFilePaths);
+            actualFilePaths.Should().BeEquivalentTo(expectedFilePaths);
 
             foreach (var expectedTsFile in expectedTsFiles)
             {
-                var targetFileName = Path.Combine(config.TargetDirectory, expectedTsFile.Name);
+                var targetFileName = Path.Combine(expectedTsFile.Directory, expectedTsFile.Name);
 
                 var actualFileContent = fileWriter.CreatedFiles
                     .SingleOrDefault(x => x.Key == targetFileName)
                     .Value;
 
-                expectedTsFile.Lines.Should().BeEquivalentTo(actualFileContent);
+                actualFileContent.Should().BeEquivalentTo(expectedTsFile.Lines);
             }
         }
     }
