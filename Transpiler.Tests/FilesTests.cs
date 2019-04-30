@@ -30,10 +30,18 @@ namespace Transpiler.Tests
             //         && t.CustomAttributes.Contains)
             //   .ToList();
 
+            var fn = typeof(Bla<>).FullName;
+            var fn2 = typeof(Bla<int>).FullName;
+
             var path = Path.Combine("a", "\\b", "c");
 
             var ns = typeof(A.ClassA).Namespace;
             var p = Directory.GetCurrentDirectory();
+        }
+
+        class Bla<T>
+        {
+
         }
     }
 }
