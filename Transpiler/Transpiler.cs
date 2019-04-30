@@ -68,20 +68,28 @@ namespace Transpiler
 
         }
 
-        string TsTypeName(Type type)
+        string TsTypeName(Type propType)
         {
             var tsTypeName = "any";
 
-            var isEnumerable = type != typeof(string) && typeof(IEnumerable).IsAssignableFrom(type);
+            var isEnumerable = propType != typeof(string) && typeof(IEnumerable).IsAssignableFrom(propType);
+
+            var isNullable = propType.IsValueType && Nullable.GetUnderlyingType(propType) != null;
+            if (isNullable)
+                propType = Nullable.GetUnderlyingType(propType);
 
             if (isEnumerable)
-                type = type.GetGenericArguments().First();
+                propType = propType.GetGenericArguments().First();
 
-            if (type.Name == typeof(int).Name) tsTypeName = "number";
-            if (type.Name == typeof(string).Name) tsTypeName = "string";
-            if (type.Name == typeof(bool).Name) tsTypeName = "boolean";
-            if (type.Name == typeof(DateTime).Name) tsTypeName = "Date";
-            if (type.Name == typeof(DateTimeOffset).Name) tsTypeName = "Date";
+            if (propType.Name == typeof(int).Name) tsTypeName = "number";
+            if (propType.Name == typeof(string).Name) tsTypeName = "string";
+            if (propType.Name == typeof(Guid).Name) tsTypeName = "string";
+            if (propType.Name == typeof(bool).Name) tsTypeName = "boolean";
+            if (propType.Name == typeof(DateTime).Name) tsTypeName = "Date";
+            if (propType.Name == typeof(DateTimeOffset).Name) tsTypeName = "Date";
+
+            if (isNullable)
+                tsTypeName = tsTypeName + " | null";
 
             if (isEnumerable)
                 tsTypeName = tsTypeName + "[]";
