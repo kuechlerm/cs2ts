@@ -22,6 +22,8 @@ namespace Transpiler.Tests
         [InlineData("I")]
         [InlineData("J")]
         [InlineData("K")]
+        [InlineData("M")]
+        [InlineData("N")]
         public void Matches(string ns)
         {
             var fullNamespace = "Transpiler.Tests." + ns;
@@ -45,7 +47,7 @@ namespace Transpiler.Tests
 
             var inputTypes = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(t => t.Namespace != null
-                    && t.Namespace.StartsWith(fullNamespace) && !t.Name.StartsWith("Config")
+                    && (t.Namespace == fullNamespace || t.Namespace.StartsWith(fullNamespace + ".")) && !t.Name.StartsWith("Config")
                     && !CompilerGenerated(t))
                 .ToList();
 
