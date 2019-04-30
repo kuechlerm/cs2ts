@@ -1,0 +1,20 @@
+{
+    "folders": [
+        { "path": "Transpiler" },
+        { "path": "Transpiler.Console" },
+        { "path": "Transpiler.Tests" },
+    ],
+    "settings": {
+        "workbench.colorCustomizations": {
+            "activityBar.background": "#333"
+        },
+        "files.exclude": {
+            "**/obj": true,
+            "**/bin": true,
+            "**/.vscode": true,
+            "**/.gitignore": true
+        },
+        "dotnet-test-explorer.testProjectPath": "**/*.Tests.csproj",
+        "dotnet-test-explorer.pathForResultFile": "c:/temp",
+    }
+}
