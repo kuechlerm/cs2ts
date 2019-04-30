@@ -60,9 +60,9 @@ namespace Transpiler
 
                 var fileName = $"{type.Name}.ts";
                 var subFolders = this.config.UseNamespacesAsFolders
-                    ? type.Namespace.Replace(".", "\\")
+                    ? this.config.MapNamespace(type.Namespace).Replace(".", "\\")
                     : "";
-                var filePath = Path.Combine(this.config.TargetDirectory, subFolders, fileName);
+                var filePath = Path.Combine(this.config.TargetDirectory, subFolders.Trim('\\'), fileName);
                 this.fileWriter.CreateFile(filePath, content);
             }
 

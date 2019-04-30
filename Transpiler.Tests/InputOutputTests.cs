@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using FluentAssertions;
 using Xunit;
 
@@ -16,6 +17,7 @@ namespace Transpiler.Tests
         [InlineData("D")]
         [InlineData("E")]
         [InlineData("F")]
+        [InlineData("G")]
         public void Matches(string ns)
         {
             var fullNamespace = "Transpiler.Tests." + ns;
@@ -38,7 +40,9 @@ namespace Transpiler.Tests
                 + "\\Output";
 
             var inputTypes = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(t => t.Namespace != null && t.Namespace.StartsWith(fullNamespace) && t.Name != "Config")
+                .Where(t => t.Namespace != null
+                    && t.Namespace.StartsWith(fullNamespace) && !t.Name.StartsWith("Config")
+                    && !CompilerGenerated(t))
                 .ToList();
 
             transpiler.Run(inputTypes);
@@ -64,7 +68,7 @@ namespace Transpiler.Tests
 
             foreach (var expectedTsFile in expectedTsFiles)
             {
-                var targetFileName = Path.Combine(expectedTsFile.Directory, expectedTsFile.Name);
+                var targetFileName = expectedTsFile.Directory + expectedTsFile.Name;
 
                 var actualFileContent = fileWriter.CreatedFiles
                     .SingleOrDefault(x => x.Key == targetFileName)
@@ -72,6 +76,12 @@ namespace Transpiler.Tests
 
                 actualFileContent.Should().BeEquivalentTo(expectedTsFile.Lines);
             }
+        }
+
+        bool CompilerGenerated(Type t)
+        {
+            var attr = Attribute.GetCustomAttribute(t, typeof(CompilerGeneratedAttribute));
+            return attr != null;
         }
     }
 }

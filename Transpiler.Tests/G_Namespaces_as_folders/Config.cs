@@ -6,7 +6,7 @@ namespace Transpiler.Tests.G
         {
             this.TargetDirectory = "c:\\temp\\cs2ts_test";
             this.UseNamespacesAsFolders = true;
-            this.MapNamespace = ns => "";
+            this.MapNamespace = ns => ns.Substring("Transpiler.Tests.G".Length);
         }
     }
 }

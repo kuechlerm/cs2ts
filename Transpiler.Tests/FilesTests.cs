@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Xunit;
 
 namespace Transpiler.Tests
@@ -21,9 +22,16 @@ namespace Transpiler.Tests
 
         }
 
-        [Fact(Skip = "asdf")]
+        [Fact(Skip = "asfd")]
         public void DefaultOutputTest()
         {
+            // var inputTypes = Assembly.GetExecutingAssembly().GetTypes()
+            //   .Where(t => t.Namespace != null && t.Namespace.EndsWith("G")
+            //         && t.CustomAttributes.Contains)
+            //   .ToList();
+
+            var path = Path.Combine("a", "\\b", "c");
+
             var ns = typeof(A.ClassA).Namespace;
             var p = Directory.GetCurrentDirectory();
         }
