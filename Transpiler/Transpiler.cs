@@ -43,8 +43,8 @@ namespace Transpiler
                     imports.Add(string.Empty);
                 }
 
-                var genericAddon = tsType.Type.IsGenericType
-                    ? "<T>"
+                var genericAddon = tsType.GenericArguments.Any()
+                    ? $"<{string.Join(", ", tsType.GenericArguments)}>"
                     : string.Empty;
                 body.Add($"export interface {tsType.Name}{genericAddon} {{");
 
@@ -73,6 +73,7 @@ namespace Transpiler
                     Id = t.FullName,
                     Name = this.GetTypeName(t),
                     Directory = Path.Combine(this.config.TargetDirectory, subFolders.Trim('\\')),
+                    GenericArguments = t.GetGenericArguments().Select(x => x.Name).ToList(),
                     Type = t
                 };
             }
@@ -80,25 +81,27 @@ namespace Transpiler
 
         void CreatePropertyLines(PropertyInfo property, TsType tsType, IEnumerable<TsType> tsTypes, List<string> imports, List<string> body)
         {
-            var pt = property.PropertyType;
+            var propertyType = property.PropertyType;
 
-            var isEnumerable = pt != typeof(string) && typeof(IEnumerable).IsAssignableFrom(pt);
+            var isEnumerable = propertyType != typeof(string)
+                && typeof(IEnumerable).IsAssignableFrom(propertyType);
+
             if (isEnumerable)
-                pt = pt.GetGenericArguments().First();
+                propertyType = propertyType.GetGenericArguments().First();
 
-            if (pt.IsGenericParameter)
+            if (propertyType.IsGenericParameter)
             {
-                body.Add($"    {property.Name}: T{(isEnumerable ? "[]" : string.Empty)};");
+                body.Add($"    {property.Name}: {propertyType.Name}{(isEnumerable ? "[]" : string.Empty)};");
 
                 return;
             }
 
             // possible TsType
-            var otherTsType = tsTypes.SingleOrDefault(t => t.Id == pt.FullName);
+            var otherTsType = tsTypes.SingleOrDefault(t => t.Id == propertyType.FullName);
 
             if (otherTsType == null)
             {
-                body.Add($"    {property.Name}: {this.TsTypeName(pt)}{(isEnumerable ? "[]" : string.Empty)};");
+                body.Add($"    {property.Name}: {this.TsTypeName(propertyType)}{(isEnumerable ? "[]" : string.Empty)};");
             }
             else
             {

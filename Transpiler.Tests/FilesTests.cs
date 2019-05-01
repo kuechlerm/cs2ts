@@ -22,7 +22,7 @@ namespace Transpiler.Tests
 
         }
 
-        [Fact(Skip = "asfd")]
+        [Fact]
         public void DefaultOutputTest()
         {
             // var inputTypes = Assembly.GetExecutingAssembly().GetTypes()
@@ -30,7 +30,8 @@ namespace Transpiler.Tests
             //         && t.CustomAttributes.Contains)
             //   .ToList();
 
-            var fn = typeof(Bla<>).FullName;
+            var gas = typeof(A.ClassA).GetGenericArguments();
+
             var fn2 = typeof(Bla<int>).FullName;
 
             var path = Path.Combine("a", "\\b", "c");
