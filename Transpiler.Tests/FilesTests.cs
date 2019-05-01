@@ -30,11 +30,14 @@ namespace Transpiler.Tests
             //         && t.CustomAttributes.Contains)
             //   .ToList();
 
-            var infs = typeof(R.ClassA).GetInterfaces();
+            var propsA = typeof(N.ClassA<>).GetProperties();
+            var props = typeof(T.Base<>).GetProperties();
 
-            var gas = typeof(A.ClassA).GetGenericArguments();
-
-            var fn2 = typeof(Bla<int>).FullName;
+            var infs = typeof(S.ClassA).GetInterfaces();
+            var infT = typeof(S.InterfaceA<>);
+            var infInt = typeof(S.InterfaceA<int>);
+            var blaT = typeof(Bla<>);
+            var blaINt = typeof(Bla<int>);
 
             var path = Path.Combine("a", "\\b", "c");
 

@@ -48,30 +48,60 @@ namespace Transpiler
 
                 var extentionAddon = string.Empty;
 
-                if (tsType.HasBaseClass)
-                {
-                    var knownBaseClass = tsTypes.SingleOrDefault(t => t.Id == tsType.Type.BaseType.FullName);
-                    if (knownBaseClass != null)
-                    {
-                        var relPath = this.CreateRelativeDirectoryPath(tsType.Directory, knownBaseClass.Directory);
-                        imports.Add($"import {{ {knownBaseClass.Name} }} from \"{relPath + knownBaseClass.Name}\";");
 
-                        extentionAddon = " extends " + knownBaseClass.Name;
-                    }
-                }
+                // if (tsType.HasBaseClass)
+                // {
+                // var knownBaseClass = tsTypes.SingleOrDefault(t => t.Id == tsType.Type.BaseType.FullName);
+                // if (knownBaseClass != null)
+                // {
+                //     var relPath = this.CreateRelativeDirectoryPath(tsType.Directory, knownBaseClass.Directory);
+                //     imports.Add($"import {{ {knownBaseClass.Name} }} from \"{relPath + knownBaseClass.Name}\";");
 
-                var tsInterfaces = tsType.Type.GetInterfaces()
-                    .Select(inf => tsTypes.SingleOrDefault(t => t.Id == inf.FullName));
+                //     extentionAddon = " extends " + knownBaseClass.Name;
+                // }
+                // }
+
+                var interfaces = tsType.Type.GetInterfaces().ToList();
+                if (tsType.HasBaseClass) interfaces.Insert(0, tsType.Type.BaseType);
+
+                var tsInterfaces = interfaces
+                    .Select(inf => tsTypes.SingleOrDefault(t => t.Id == inf.FullName
+                        || (inf.IsGenericType && t.Id.Split('`')[0] == inf.FullName.Split('`')[0])))
+                    .Where(x => x != null);
                 if (tsInterfaces.Any())
                 {
-                    foreach (var inf in tsInterfaces)
+                    foreach (var tsInf in tsInterfaces)
                     {
-                        var relPath = this.CreateRelativeDirectoryPath(tsType.Directory, inf.Directory);
-                        imports.Add($"import {{ {inf.Name} }} from \"{relPath + inf.Name}\";");
+                        var relPath = this.CreateRelativeDirectoryPath(tsType.Directory, tsInf.Directory);
+                        imports.Add($"import {{ {tsInf.Name} }} from \"{relPath + tsInf.Name}\";");
+
+                        var infName = tsInf.Name;
+                        // generic interface like Bla<int>
+                        if (tsInf.GenericArguments.Any())
+                        {
+                            var genericArgumentsTypeNames = new List<string>();
+                            var inf = interfaces.Single(i => tsInf.Id.Split('`')[0] == i.FullName.Split('`')[0]);
+                            foreach (var gta in inf.GenericTypeArguments)
+                            {
+                                var otherTsType = tsTypes.SingleOrDefault(t => t.Id == gta.FullName);
+                                if (otherTsType == null)
+                                {
+                                    // maybe a primitive?
+                                    var tsTypeName = this.TsTypeName(gta);
+
+                                    genericArgumentsTypeNames.Add(tsTypeName);
+                                    continue;
+                                }
+
+                                genericArgumentsTypeNames.Add(otherTsType.Name);
+                            }
+
+                            infName += $"<{string.Join(", ", genericArgumentsTypeNames)}>";
+                        }
 
                         extentionAddon += string.IsNullOrEmpty(extentionAddon)
-                            ? " extends " + inf.Name
-                            : ", " + inf.Name;
+                            ? " extends " + infName
+                            : ", " + infName;
                     }
                 }
 
@@ -115,8 +145,6 @@ namespace Transpiler
         void CreatePropertyLines(PropertyInfo property, TsType tsType, IEnumerable<TsType> tsTypes, IEnumerable<TsType> tsInterfaces,
             List<string> imports, List<string> body)
         {
-
-            // property in tsInterfaces->skip
             var isInterfaceProperty = tsInterfaces.SelectMany(tsi => tsi.Type.GetMember(property.Name)).Any();
             if (isInterfaceProperty) return;
 
