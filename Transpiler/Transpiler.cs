@@ -43,11 +43,28 @@ namespace Transpiler
                     imports.Add(string.Empty);
                 }
 
+                // Sturcture Line
                 var genericAddon = tsType.GenericArguments.Any()
                     ? $"<{string.Join(", ", tsType.GenericArguments)}>"
                     : string.Empty;
-                body.Add($"export interface {tsType.Name}{genericAddon} {{");
 
+                var extentionAddon = "";
+
+                if (tsType.HasBaseClass)
+                {
+                    var knownBaseClass = tsTypes.SingleOrDefault(t => t.Id == tsType.Type.BaseType.FullName);
+                    if (knownBaseClass != null)
+                    {
+                        var relPath = this.CreateRelativeDirectoryPath(tsType.Directory, knownBaseClass.Directory);
+                        imports.Add($"import {{ {knownBaseClass.Name} }} from \"{relPath + knownBaseClass.Name}\";");
+
+                        extentionAddon = " extends " + knownBaseClass.Name;
+                    }
+                }
+
+                body.Add($"export interface {tsType.Name}{genericAddon}{extentionAddon} {{");
+
+                // Properties
                 var properties = tsType.Type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
                 foreach (var prop in properties)
                 {
@@ -74,6 +91,7 @@ namespace Transpiler
                     Name = this.GetTypeName(t),
                     Directory = Path.Combine(this.config.TargetDirectory, subFolders.Trim('\\')),
                     GenericArguments = t.GetGenericArguments().Select(x => x.Name).ToList(),
+                    HasBaseClass = t.BaseType != null && t.BaseType != typeof(Object),
                     Type = t
                 };
             }
@@ -148,10 +166,21 @@ namespace Transpiler
             if (isNullable)
                 propType = Nullable.GetUnderlyingType(propType);
 
-            if (propType.Name == typeof(int).Name) tsTypeName = "number";
-            if (propType.Name == typeof(string).Name) tsTypeName = "string";
+            if (propType.Name == typeof(Boolean).Name) tsTypeName = "boolean";
+            if (propType.Name == typeof(Byte).Name) tsTypeName = "number";
+            if (propType.Name == typeof(SByte).Name) tsTypeName = "number";
+            if (propType.Name == typeof(Decimal).Name) tsTypeName = "number";
+            if (propType.Name == typeof(Double).Name) tsTypeName = "number";
+            if (propType.Name == typeof(Single).Name) tsTypeName = "number";
+            if (propType.Name == typeof(Int32).Name) tsTypeName = "number";
+            if (propType.Name == typeof(UInt32).Name) tsTypeName = "number";
+            if (propType.Name == typeof(Int64).Name) tsTypeName = "number";
+            if (propType.Name == typeof(UInt64).Name) tsTypeName = "number";
+            if (propType.Name == typeof(Int16).Name) tsTypeName = "number";
+            if (propType.Name == typeof(UInt16).Name) tsTypeName = "number";
+            if (propType.Name == typeof(Char).Name) tsTypeName = "string";
+            if (propType.Name == typeof(String).Name) tsTypeName = "string";
             if (propType.Name == typeof(Guid).Name) tsTypeName = "string";
-            if (propType.Name == typeof(bool).Name) tsTypeName = "boolean";
             if (propType.Name == typeof(DateTime).Name) tsTypeName = "Date";
             if (propType.Name == typeof(DateTimeOffset).Name) tsTypeName = "Date";
 

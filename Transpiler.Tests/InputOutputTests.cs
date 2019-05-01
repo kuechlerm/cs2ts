@@ -25,6 +25,8 @@ namespace Transpiler.Tests
         [InlineData("M")]
         [InlineData("N")]
         [InlineData("O")]
+        [InlineData("P")]
+        [InlineData("Q")]
         public void Matches(string ns)
         {
             var fullNamespace = "Transpiler.Tests." + ns;
