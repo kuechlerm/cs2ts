@@ -30,6 +30,8 @@ namespace Transpiler.Tests
             //         && t.CustomAttributes.Contains)
             //   .ToList();
 
+            var infs = typeof(R.ClassA).GetInterfaces();
+
             var gas = typeof(A.ClassA).GetGenericArguments();
 
             var fn2 = typeof(Bla<int>).FullName;
