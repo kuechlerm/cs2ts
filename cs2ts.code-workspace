@@ -1,5 +1,6 @@
 {
     "folders": [
+        { "path": "Docs" },
         { "path": "Transpiler" },
         { "path": "Transpiler.Console" },
         { "path": "Transpiler.Tests" },

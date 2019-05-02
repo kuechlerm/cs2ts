@@ -13,5 +13,6 @@ namespace Transpiler
             = ns => ns;
 
         public bool PrintGeneratedFileText { get; set; }
+        public bool CreateIndexFiles { get; set; }
     }
 }

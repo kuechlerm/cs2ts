@@ -29,6 +29,7 @@ namespace Transpiler
             this.fileWriter.CreateDirectory(this.config.TargetDirectory);
 
             var tsTypes = this.CreateTsTypes(types);
+            var indexFilesLines = new Dictionary<string, List<string>>();
 
             foreach (var tsType in tsTypes)
             {
@@ -46,13 +47,11 @@ namespace Transpiler
                     ? $"<{string.Join(", ", tsType.GenericArguments)}>"
                     : string.Empty;
 
-
                 var interfaces = tsType.Type.GetInterfaces().ToList();
                 if (tsType.HasBaseClass) interfaces.Insert(0, tsType.Type.BaseType);
 
-                var tsInterfaces = interfaces
-                    .Select(inf => tsTypes.SingleOrDefault(t => t.Id == inf.FullName
-                        || (inf.IsGenericType && t.Id.Split('`')[0] == inf.FullName.Split('`')[0])))
+                var tsInterfaces = interfaces.Select(inf => tsTypes.SingleOrDefault(t => t.Id == inf.FullName
+                       || (inf.IsGenericType && t.Id.Split('`')[0] == inf.FullName.Split('`')[0])))
                     .Where(x => x != null);
 
                 var extentionAddon = this.CreateExtentionText(tsType, tsTypes, interfaces, tsInterfaces, imports);
@@ -70,7 +69,29 @@ namespace Transpiler
 
                 // Write File
                 var filePath = Path.Combine(tsType.Directory, $"{tsType.Name}.ts");
-                this.fileWriter.CreateFile(filePath, this.CombineLines(imports, body));
+                this.fileWriter.CreateFile(filePath, this.CombineImportsAndBody(imports, body));
+
+                // Add index line
+                if (config.CreateIndexFiles)
+                {
+                    var exportLine = $"export * from './{tsType.Name}';";
+
+                    indexFilesLines.TryGetValue(tsType.Directory, out var lines);
+                    lines = lines ?? new List<string>();
+
+                    lines.Add(exportLine);
+                    indexFilesLines[tsType.Directory] = lines;
+                }
+            }
+
+            // Create Index file
+            if (config.CreateIndexFiles)
+            {
+                foreach (var indexFile in indexFilesLines)
+                {
+                    var indexFilePath = Path.Combine(indexFile.Key, "index.ts");
+                    this.fileWriter.CreateFile(indexFilePath, indexFile.Value);
+                }
             }
         }
 
@@ -116,6 +137,7 @@ namespace Transpiler
                 {
                     var genericArgumentsTypeNames = new List<string>();
                     var inf = interfaces.Single(i => tsInf.Id.Split('`')[0] == i.FullName.Split('`')[0]);
+
                     foreach (var gta in inf.GenericTypeArguments)
                     {
                         var otherTsType = tsTypes.SingleOrDefault(t => t.Id == gta.FullName);
@@ -179,7 +201,7 @@ namespace Transpiler
             }
         }
 
-        List<string> CombineLines(List<string> imports, List<string> body)
+        List<string> CombineImportsAndBody(List<string> imports, List<string> body)
         {
             var fileLines = new List<string>();
             fileLines.AddRange(imports);
