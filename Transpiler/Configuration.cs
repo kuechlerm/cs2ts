@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace Transpiler
+namespace CS2TS
 {
     public class Configuration
     {

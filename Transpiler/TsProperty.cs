@@ -1,4 +1,4 @@
-namespace Transpiler
+namespace CS2TS
 {
     public class TsProperty
     {

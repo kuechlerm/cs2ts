@@ -1,4 +1,4 @@
-namespace Transpiler.Tests.J.Sub
+namespace CS2TS.Tests.J.Sub
 {
     public class ClassC
     {

@@ -1,4 +1,4 @@
-namespace Transpiler.Tests.I
+namespace CS2TS.Tests.I
 {
     public class Config : Configuration
     {

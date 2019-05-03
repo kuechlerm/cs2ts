@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 
-namespace Transpiler
+namespace CS2TS
 {
     public interface IFileWriter
     {
-        void CreateDirectory(string path);
+        void RecreateDirectory(string path);
         void CreateFile(string path, List<string> lines);
     }
 }

@@ -1,6 +1,6 @@
-using Transpiler.Tests.M_Ns_out_of_Ns;
+using CS2TS.Tests.M_Ns_out_of_Ns;
 
-namespace Transpiler.Tests.M
+namespace CS2TS.Tests.M
 {
     public class ClassA
     {

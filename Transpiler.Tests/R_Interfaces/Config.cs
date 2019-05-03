@@ -1,4 +1,4 @@
-namespace Transpiler.Tests.R
+namespace CS2TS.Tests.R
 {
     public class Config : Configuration
     {

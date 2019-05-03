@@ -1,6 +1,6 @@
-using Transpiler.Tests.J.Sub;
+using CS2TS.Tests.J.Sub;
 
-namespace Transpiler.Tests.J
+namespace CS2TS.Tests.J
 {
     public class ClassA
     {

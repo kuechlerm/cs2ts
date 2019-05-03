@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Transpiler.Tests.C
+namespace CS2TS.Tests.C
 {
     public class ClassA
     {

@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using FluentAssertions;
 using Xunit;
 
-namespace Transpiler.Tests
+namespace CS2TS.Tests
 {
     public class InputOutputTests
     {
@@ -34,7 +34,7 @@ namespace Transpiler.Tests
         [InlineData("V")]
         public void Matches(string ns)
         {
-            var fullNamespace = "Transpiler.Tests." + ns;
+            var fullNamespace = "CS2TS.Tests." + ns;
 
             // Create Transpiler
             var configType = Assembly.GetExecutingAssembly().GetTypes()

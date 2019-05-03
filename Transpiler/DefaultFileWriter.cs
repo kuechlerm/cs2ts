@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Transpiler
+namespace CS2TS
 {
     public class DefaultFileWriter : IFileWriter
     {
-        public void CreateDirectory(string path)
+        public void RecreateDirectory(string path)
         {
             if (Directory.Exists(path))
             {
@@ -17,6 +17,7 @@ namespace Transpiler
 
         public void CreateFile(string path, List<string> lines)
         {
+            new FileInfo(path).Directory.Create();
             File.WriteAllLines(path, lines);
         }
     }

@@ -1,6 +1,6 @@
-using Transpiler.Tests.Q_Unknown;
+using CS2TS.Tests.Q_Unknown;
 
-namespace Transpiler.Tests.Q
+namespace CS2TS.Tests.Q
 {
     public class ClassA : Base
     {

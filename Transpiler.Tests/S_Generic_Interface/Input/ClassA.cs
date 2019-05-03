@@ -1,4 +1,4 @@
-namespace Transpiler.Tests.S
+namespace CS2TS.Tests.S
 {
     public class ClassA : InterfaceA<int>
     {

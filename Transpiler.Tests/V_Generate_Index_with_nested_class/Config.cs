@@ -1,4 +1,4 @@
-namespace Transpiler.Tests.V
+namespace CS2TS.Tests.V
 {
     public class Config : Configuration
     {
@@ -7,7 +7,7 @@ namespace Transpiler.Tests.V
             this.TargetDirectory = "c:\\temp\\cs2ts_test";
             this.CreateIndexFiles = true;
             this.UseNamespacesAsFolders = true;
-            this.MapNamespace = ns => ns.Substring("Transpiler.Tests.V".Length);
+            this.MapNamespace = ns => ns.Substring("CS2TS.Tests.V".Length);
         }
 
     }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Transpiler.Tests.O
+namespace CS2TS.Tests.O
 {
     public class ClassA<T, U>
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Transpiler.Tests
+namespace CS2TS.Tests
 {
     public class TestFileWriter : IFileWriter
     {
@@ -8,7 +8,7 @@ namespace Transpiler.Tests
         public Dictionary<string, List<string>> CreatedFiles { get; private set; }
             = new Dictionary<string, List<string>>();
 
-        public void CreateDirectory(string path)
+        public void RecreateDirectory(string path)
         {
             this.CreatedDirectoryPaths.Add(path);
         }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Transpiler
+namespace CS2TS
 {
     public class TsFile
     {

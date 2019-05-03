@@ -3,14 +3,14 @@ using System.Linq;
 using System.Reflection;
 using Xunit;
 
-namespace Transpiler.Tests
+namespace CS2TS.Tests
 {
     public class FilesTests
     {
         [Fact(Skip = "Manual")]
         public void GetTsFiles()
         {
-            var path = @"C:\Dev\Tools\cs2ts\Transpiler.Tests\E_Subfolders\Output";
+            var path = @"C:\Dev\Tools\cs2ts\CS2TS.Tests\E_Subfolders\Output";
 
             var tsFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)
                 .Select(x => new TsFile

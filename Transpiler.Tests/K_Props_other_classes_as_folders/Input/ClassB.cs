@@ -1,4 +1,4 @@
-namespace Transpiler.Tests.K
+namespace CS2TS.Tests.K
 {
     public class ClassB
     {

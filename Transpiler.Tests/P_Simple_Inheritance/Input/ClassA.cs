@@ -1,4 +1,4 @@
-namespace Transpiler.Tests.P
+namespace CS2TS.Tests.P
 {
     public class ClassA : Base
     {

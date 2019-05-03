@@ -1,4 +1,4 @@
-namespace Transpiler.Tests.Q_Unknown
+namespace CS2TS.Tests.Q_Unknown
 {
     public class Base
     {

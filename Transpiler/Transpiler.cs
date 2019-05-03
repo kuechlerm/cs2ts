@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace Transpiler
+namespace CS2TS
 {
     public class Transpiler
     {
@@ -26,7 +26,7 @@ namespace Transpiler
 
         public void Run(IEnumerable<Type> types)
         {
-            this.fileWriter.CreateDirectory(this.config.TargetDirectory);
+            this.fileWriter.RecreateDirectory(this.config.TargetDirectory);
 
             var tsTypes = this.CreateTsTypes(types);
             var indexFilesLines = new Dictionary<string, List<string>>();
