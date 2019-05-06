@@ -1,4 +1,4 @@
-import { ClassB } from "./ClassB";
+import { ClassB } from './ClassB';
 
 export interface ClassC {
     B: ClassB;

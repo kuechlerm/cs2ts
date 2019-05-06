@@ -129,7 +129,7 @@ namespace CS2TS
             foreach (var tsInf in tsInterfaces)
             {
                 var relPath = this.CreateRelativeDirectoryPath(tsType.Directory, tsInf.Directory);
-                imports.Add($"import {{ {tsInf.Name} }} from \"{relPath + tsInf.Name}\";");
+                imports.Add($"import {{ {tsInf.Name} }} from '{relPath + tsInf.Name}';");
 
                 var infName = tsInf.Name;
                 // generic interface like Bla<int>
@@ -196,7 +196,7 @@ namespace CS2TS
             else
             {
                 var relPath = this.CreateRelativeDirectoryPath(tsType.Directory, otherTsType.Directory);
-                imports.Add($"import {{ {otherTsType.Name} }} from \"{relPath + otherTsType.Name}\";");
+                imports.Add($"import {{ {otherTsType.Name} }} from '{relPath + otherTsType.Name}';");
                 body.Add($"    {property.Name}: {otherTsType.Name}{(isEnumerable ? "[]" : string.Empty)};");
             }
         }
