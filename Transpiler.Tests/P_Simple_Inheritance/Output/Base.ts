@@ -1,3 +1,3 @@
 export interface Base {
-    BaseProp: string;
+    baseProp: string;
 }

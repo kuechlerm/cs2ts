@@ -181,7 +181,7 @@ namespace CS2TS
 
             if (propertyType.IsGenericParameter)
             {
-                body.Add($"    {property.Name}: {propertyType.Name}{(isEnumerable ? "[]" : string.Empty)};");
+                body.Add($"    {this.ToLowerFirstChar(property.Name)}: {propertyType.Name}{(isEnumerable ? "[]" : string.Empty)};");
 
                 return;
             }
@@ -191,14 +191,19 @@ namespace CS2TS
 
             if (otherTsType == null)
             {
-                body.Add($"    {property.Name}: {this.TsTypeName(propertyType)}{(isEnumerable ? "[]" : string.Empty)};");
+                body.Add($"    {this.ToLowerFirstChar(property.Name)}: {this.TsTypeName(propertyType)}{(isEnumerable ? "[]" : string.Empty)};");
             }
             else
             {
                 var relPath = this.CreateRelativeDirectoryPath(tsType.Directory, otherTsType.Directory);
                 imports.Add($"import {{ {otherTsType.Name} }} from '{relPath + otherTsType.Name}';");
-                body.Add($"    {property.Name}: {otherTsType.Name}{(isEnumerable ? "[]" : string.Empty)};");
+                body.Add($"    {this.ToLowerFirstChar(property.Name)}: {otherTsType.Name}{(isEnumerable ? "[]" : string.Empty)};");
             }
+        }
+
+        string ToLowerFirstChar(string text)
+        {
+            return text.Substring(0, 1).ToLower() + text.Substring(1);
         }
 
         List<string> CombineImportsAndBody(List<string> imports, List<string> body)

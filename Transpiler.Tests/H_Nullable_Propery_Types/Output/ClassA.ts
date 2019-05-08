@@ -1,7 +1,7 @@
 export interface ClassA {
-    NullableId: number | null;
-    NullableCheck: boolean | null;
-    NullableDate: Date | null;
-    NullableDateOffset: Date | null;
-    NullableGuid: string | null;
+    nullableId: number | null;
+    nullableCheck: boolean | null;
+    nullableDate: Date | null;
+    nullableDateOffset: Date | null;
+    nullableGuid: string | null;
 }

@@ -1,3 +1,3 @@
 export interface InterfaceA {
-    AProp: number;
+    aProp: number;
 }

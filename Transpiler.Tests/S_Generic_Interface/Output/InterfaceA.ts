@@ -1,3 +1,3 @@
 export interface InterfaceA<T> {
-    AProp: T;
+    aProp: T;
 }

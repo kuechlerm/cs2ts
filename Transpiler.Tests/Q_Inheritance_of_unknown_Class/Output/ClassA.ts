@@ -1,3 +1,3 @@
 export interface ClassA {
-    AProp: number;
+    aProp: number;
 }

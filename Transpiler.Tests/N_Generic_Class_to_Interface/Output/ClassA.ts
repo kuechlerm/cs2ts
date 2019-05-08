@@ -1,4 +1,4 @@
 export interface ClassA<T> {
-    TProp: T;
-    TList: T[];
+    tProp: T;
+    tList: T[];
 }

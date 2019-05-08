@@ -1,3 +1,3 @@
 export interface ClassA {
-    B: any;
+    b: any;
 }

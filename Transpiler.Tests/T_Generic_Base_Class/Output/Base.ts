@@ -1,3 +1,3 @@
 export interface Base<T> {
-    AProp: T;
+    aProp: T;
 }

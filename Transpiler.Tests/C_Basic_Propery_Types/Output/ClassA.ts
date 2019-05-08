@@ -1,8 +1,8 @@
 export interface ClassA {
-    Id: number;
-    Text: string;
-    Check: boolean;
-    Date: Date;
-    DateOffset: Date;
-    NumberList: number[];
+    id: number;
+    text: string;
+    check: boolean;
+    date: Date;
+    dateOffset: Date;
+    numberList: number[];
 }
