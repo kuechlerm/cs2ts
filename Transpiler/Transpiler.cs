@@ -56,7 +56,7 @@ namespace CS2TS
 
                 var extentionAddon = this.CreateExtentionText(tsType, tsTypes, interfaces, tsInterfaces, imports);
 
-                body.Add($"export interface {tsType.Name}{genericAddon}{extentionAddon} {{");
+                body.Add($"export interface {config.MapName(tsType.Name)}{genericAddon}{extentionAddon} {{");
 
                 // Properties
                 var properties = tsType.Type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
@@ -68,13 +68,13 @@ namespace CS2TS
                 body.Add("}");
 
                 // Write File
-                var filePath = Path.Combine(tsType.Directory, $"{tsType.Name}.ts");
+                var filePath = Path.Combine(tsType.Directory, $"{config.MapName(tsType.Name)}.ts");
                 this.fileWriter.CreateFile(filePath, this.CombineImportsAndBody(imports, body));
 
                 // Add index line
                 if (config.CreateIndexFiles)
                 {
-                    var exportLine = $"export * from './{tsType.Name}';";
+                    var exportLine = $"export * from './{config.MapName(tsType.Name)}';";
 
                     indexFilesLines.TryGetValue(tsType.Directory, out var lines);
                     lines = lines ?? new List<string>();
@@ -150,7 +150,7 @@ namespace CS2TS
                             continue;
                         }
 
-                        genericArgumentsTypeNames.Add(otherTsType.Name);
+                        genericArgumentsTypeNames.Add(config.MapName(otherTsType.Name));
                     }
 
                     infName += $"<{string.Join(", ", genericArgumentsTypeNames)}>";
@@ -196,8 +196,8 @@ namespace CS2TS
             else
             {
                 var relPath = this.CreateRelativeDirectoryPath(tsType.Directory, otherTsType.Directory);
-                imports.Add($"import {{ {otherTsType.Name} }} from '{relPath + otherTsType.Name}';");
-                body.Add($"    {this.ToLowerFirstChar(property.Name)}: {otherTsType.Name}{(isEnumerable ? "[]" : string.Empty)};");
+                imports.Add($"import {{ {config.MapName(otherTsType.Name)} }} from '{relPath + config.MapName(otherTsType.Name)}';");
+                body.Add($"    {this.ToLowerFirstChar(property.Name)}: {config.MapName(otherTsType.Name)}{(isEnumerable ? "[]" : string.Empty)};");
             }
         }
 

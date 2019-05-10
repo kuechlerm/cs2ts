@@ -32,6 +32,7 @@ namespace CS2TS.Tests
         [InlineData("T")]
         [InlineData("U")]
         [InlineData("V")]
+        [InlineData("W")]
         public void Matches(string ns)
         {
             var fullNamespace = "CS2TS.Tests." + ns;

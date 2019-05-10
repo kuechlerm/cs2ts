@@ -14,5 +14,8 @@ namespace CS2TS
 
         public bool PrintGeneratedFileText { get; set; }
         public bool CreateIndexFiles { get; set; }
+
+        public Func<string, string> MapName { get; set; }
+            = name => name;
     }
 }
