@@ -129,9 +129,9 @@ namespace CS2TS
             foreach (var tsInf in tsInterfaces)
             {
                 var relPath = this.CreateRelativeDirectoryPath(tsType.Directory, tsInf.Directory);
-                imports.Add($"import {{ {tsInf.Name} }} from '{relPath + tsInf.Name}';");
+                imports.Add($"import {{ {config.MapName(tsInf.Name)} }} from '{relPath + config.MapName(tsInf.Name)}';");
 
-                var infName = tsInf.Name;
+                var infName = config.MapName(tsInf.Name);
                 // generic interface like Bla<int>
                 if (tsInf.GenericArguments.Any())
                 {
