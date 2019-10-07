@@ -209,7 +209,10 @@ namespace CS2TS
         List<string> CombineImportsAndBody(List<string> imports, List<string> body)
         {
             var fileLines = new List<string>();
-            fileLines.AddRange(imports);
+
+            // dedupe imports: two props with the same type create two import lines
+            fileLines.AddRange(imports.Distinct());
+
             if (imports.Any() && !string.IsNullOrWhiteSpace(imports.Last())) fileLines.Add(string.Empty);
             fileLines.AddRange(body);
 
