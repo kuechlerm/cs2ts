@@ -5,3 +5,7 @@
 
 - types statt interfaces?
 - classen statt interfaces?
+
+## Release
+- `dotnet pack`
+- nuget.org -> upload
